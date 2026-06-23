@@ -1,0 +1,16 @@
+read_verilog and_gate.v
+hierarchy -check -top and_gate
+
+proc
+opt
+fsm
+opt
+memory
+opt
+
+techmap
+opt
+
+show
+
+write_verilog and_gate_netlist.v
