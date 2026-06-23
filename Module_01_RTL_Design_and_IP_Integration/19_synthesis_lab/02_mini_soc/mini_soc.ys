@@ -8,5 +8,5 @@ memory
 opt
 techmap
 opt
-show
 write_verilog mini_soc_netlist.v
+show mini_soc
