@@ -1,0 +1,24 @@
+module sync_tb;
+reg clk=0;
+reg async_in=0;
+wire sync_out2,sync_out3;
+always #5 clk=~clk;
+sync2_stage uut1(
+.clk(clk),
+.async_in(async_in),
+.sync_out(sync_out2));
+sync3_stage uut2(
+	.clk(clk),
+	.async_in(async_in),
+	.sync_out(sync_out3));
+initial begin
+ $dumpfile("dump.vcd");
+ $dumpvars(0, sync_tb);
+ // Toggle async_in at non-clock intervals
+ #7 async_in = 1;
+ #13 async_in = 0;
+ #8 async_in = 1;
+ #12 async_in = 0;
+ #50 $finish;
+ end
+endmodule
