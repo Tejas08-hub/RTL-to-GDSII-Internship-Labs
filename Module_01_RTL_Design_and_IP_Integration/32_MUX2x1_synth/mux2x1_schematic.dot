@@ -1,0 +1,23 @@
+digraph "mux2x1" {
+label="mux2x1";
+rankdir="LR";
+remincross=true;
+n3 [ shape=octagon, label="a", color="black", fontcolor="black"];
+n4 [ shape=octagon, label="b", color="black", fontcolor="black"];
+n5 [ shape=octagon, label="out", color="black", fontcolor="black"];
+n6 [ shape=octagon, label="sel", color="black", fontcolor="black"];
+c9 [ shape=record, label="{{<p7> A|<p8> Y}|$79\nINVX1|{}}",  ];
+c11 [ shape=record, label="{{<p7> A|<p10> B|<p8> Y}|$80\nNAND2X1|{}}",  ];
+c13 [ shape=record, label="{{<p7> A|<p10> B|<p12> C|<p8> Y}|$81\nOAI21X1|{}}",  ];
+n1 [ shape=diamond, label="$new_n5" ];
+n1:e -> c13:p7:w [color="black", fontcolor="black", label=""];
+n1:e -> c9:p8:w [color="black", fontcolor="black", label=""];
+n2 [ shape=diamond, label="$new_n6" ];
+n2:e -> c11:p8:w [color="black", fontcolor="black", label=""];
+n2:e -> c13:p12:w [color="black", fontcolor="black", label=""];
+n3:e -> c9:p7:w [color="black", fontcolor="black", label=""];
+n4:e -> c11:p7:w [color="black", fontcolor="black", label=""];
+n5:e -> c13:p8:w [color="black", fontcolor="black", label=""];
+n6:e -> c11:p10:w [color="black", fontcolor="black", label=""];
+n6:e -> c13:p10:w [color="black", fontcolor="black", label=""];
+}
