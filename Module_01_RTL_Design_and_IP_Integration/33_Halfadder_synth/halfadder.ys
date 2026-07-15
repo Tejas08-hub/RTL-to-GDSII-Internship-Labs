@@ -1,0 +1,12 @@
+read_verilog halfadder.v
+hierarchy -check -top halfadder
+proc
+opt
+memory
+opt
+techmap
+opt
+abc -liberty /home/lab-user/Desktop/bootcamp-files/Tech-pdks/osu018/osu018_stdcells.lib
+clean
+write_verilog halfadder_synth.v
+show -prefix halfadder
