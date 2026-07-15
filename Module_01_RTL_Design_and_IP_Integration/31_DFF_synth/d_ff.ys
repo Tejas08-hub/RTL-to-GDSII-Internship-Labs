@@ -1,0 +1,15 @@
+read_verilog d_ff.v
+hierarchy -check -top d_ff
+proc
+opt
+fsm
+opt
+memory
+opt
+techmap
+opt
+dfflibmap -liberty /home/lab-user/Desktop/bootcamp-files/Tech-pdks/osu018/osu018_stdcells.lib
+abc -liberty /home/lab-user/Desktop/bootcamp-files/Tech-pdks/osu018/osu018_stdcells.lib
+clean
+write_verilog d_ff_synth.v
+show -prefix d_ff
