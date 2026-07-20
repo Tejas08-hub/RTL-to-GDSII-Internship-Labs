@@ -1,0 +1,29 @@
+Startpoint: _35_ (rising edge-triggered flip-flop clocked by clk)
+Endpoint: _38_ (rising edge-triggered flip-flop clocked by clk)
+Path Group: clk
+Path Type: min
+
+  Delay    Time   Description
+---------------------------------------------------------
+   0.00    0.00   clock clk (rise edge)
+   0.00    0.00   clock network delay (ideal)
+   0.00    0.00 ^ _35_/CLK (DFFPOSX1)
+   3.74    3.74 ^ _35_/Q (DFFPOSX1)
+  -0.22    3.52 v _30_/Y (NAND3X1)
+   0.11    3.63 ^ _34_/Y (AOI21X1)
+   0.00    3.63 ^ _38_/D (DFFPOSX1)
+           3.63   data arrival time
+
+   0.00    0.00   clock clk (rise edge)
+   0.00    0.00   clock network delay (ideal)
+   0.00    0.00   clock reconvergence pessimism
+           0.00 ^ _38_/CLK (DFFPOSX1)
+   0.00    0.00   library hold time
+           0.00   data required time
+---------------------------------------------------------
+           0.00   data required time
+          -3.63   data arrival time
+---------------------------------------------------------
+           3.63   slack (MET)
+
+

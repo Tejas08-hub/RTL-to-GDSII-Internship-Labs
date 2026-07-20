@@ -1,0 +1,5 @@
+read_verilog counter.v
+synth -top counter
+dfflibmap -liberty /home/lab-user/Desktop/bootcamp-files/Tech-pdks/osu018/osu018_stdcells.lib
+abc -liberty /home/lab-user/Desktop/bootcamp-files/Tech-pdks/osu018/osu018_stdcells.lib
+write_verilog counter_synth.v
