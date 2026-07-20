@@ -1,0 +1,9 @@
+read_verilog d_ff.v
+
+synth -top d_ff
+
+dfflibmap -liberty /home/lab-user/Desktop/bootcamp-files/Tech-pdks/osu018/osu018_stdcells.lib
+
+abc -liberty /home/lab-user/Desktop/bootcamp-files/Tech-pdks/osu018/osu018_stdcells.lib
+
+write_verilog d_ff_synth.v

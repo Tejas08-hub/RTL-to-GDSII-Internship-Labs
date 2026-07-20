@@ -1,0 +1,26 @@
+Startpoint: _7_ (rising edge-triggered flip-flop clocked by clk)
+Endpoint: q (output port clocked by clk)
+Path Group: clk
+Path Type: min
+
+  Delay    Time   Description
+---------------------------------------------------------
+   0.00    0.00   clock clk (rise edge)
+   0.00    0.00   clock network delay (ideal)
+   0.00    0.00 ^ _7_/CLK (DFFPOSX1)
+   3.68    3.68 ^ _7_/Q (DFFPOSX1)
+   0.00    3.68 ^ q (out)
+           3.68   data arrival time
+
+   0.00    0.00   clock clk (rise edge)
+   0.00    0.00   clock network delay (ideal)
+   0.00    0.00   clock reconvergence pessimism
+  -2.00   -2.00   output external delay
+          -2.00   data required time
+---------------------------------------------------------
+          -2.00   data required time
+          -3.68   data arrival time
+---------------------------------------------------------
+           5.68   slack (MET)
+
+
