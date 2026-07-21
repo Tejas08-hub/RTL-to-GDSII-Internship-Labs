@@ -1,0 +1,26 @@
+Startpoint: _1580_ (rising edge-triggered flip-flop clocked by clk)
+Endpoint: result[0] (output port clocked by clk)
+Path Group: clk
+Path Type: max
+
+  Delay    Time   Description
+---------------------------------------------------------
+   0.00    0.00   clock clk (rise edge)
+   0.00    0.00   clock network delay (ideal)
+   0.00    0.00 ^ _1580_/CLK (DFFSR)
+   6.95    6.95 ^ _1580_/Q (DFFSR)
+   0.00    6.95 ^ result[0] (out)
+           6.95   data arrival time
+
+  10.00   10.00   clock clk (rise edge)
+   0.00   10.00   clock network delay (ideal)
+   0.00   10.00   clock reconvergence pessimism
+  -5.00    5.00   output external delay
+           5.00   data required time
+---------------------------------------------------------
+           5.00   data required time
+          -6.95   data arrival time
+---------------------------------------------------------
+          -1.95   slack (VIOLATED)
+
+

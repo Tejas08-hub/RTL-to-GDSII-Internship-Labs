@@ -1,0 +1,8 @@
+read_liberty /home/lab-user/Desktop/bootcamp-files/Tech-pdks/osu018/osu018_stdcells.lib
+read_verilog gcd.v
+synth -top gcd
+dfflibmap -liberty /home/lab-user/Desktop/bootcamp-files/Tech-pdks/osu018/osu018_stdcells.lib
+abc -liberty /home/lab-user/Desktop/bootcamp-files/Tech-pdks/osu018/osu018_stdcells.lib
+clean
+write_verilog gcd_synth.v
+stat
