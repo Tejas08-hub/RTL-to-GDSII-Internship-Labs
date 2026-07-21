@@ -2,44 +2,31 @@
 
 ## Overview
 
-This project demonstrates **Static Timing Analysis (STA)** of a synthesized **Greatest Common Divisor (GCD)** hardware design using **OpenSTA**. The RTL is written in **Verilog HDL**, synthesized using **Yosys**, and analyzed using the **OSU018 Standard Cell Library** under different clock constraints.
+This project demonstrates **Static Timing Analysis (STA)** of a synthesized **Greatest Common Divisor (GCD)** hardware design using **OpenSTA**. The RTL is developed in **Verilog HDL**, synthesized using **Yosys**, and analyzed using the **OSU018 Standard Cell Library** under different timing constraints (10 ns and 5 ns).
 
-The objective of this project is to understand how setup and hold timing are verified after synthesis and how changing the clock period affects timing closure.
+The objective is to understand setup and hold timing analysis, identify critical paths, and observe how clock constraints affect the timing performance of a digital design.
 
 ---
 
 # Introduction
 
-Static Timing Analysis (STA) is one of the most important stages in the digital ASIC design flow. Instead of simulating every possible input combination, STA mathematically verifies all timing paths in a digital circuit.
+Static Timing Analysis (STA) is an important verification stage in the ASIC design flow. Unlike simulation, STA mathematically analyzes every timing path in the circuit to verify whether data propagates correctly between sequential elements without violating setup or hold requirements.
 
-In this project, the synthesized GCD hardware is analyzed using OpenSTA to verify:
-
-- Setup Timing
-- Hold Timing
-- Critical Paths
-- Slack
-- Timing Violations
-
-The analysis is performed for two different clock periods:
-
-- **10 ns**
-- **5 ns**
-
-allowing comparison of the design performance under relaxed and aggressive timing constraints.
+In this project, OpenSTA is used to verify the timing of a synthesized GCD hardware module by generating setup and hold timing reports under different clock periods.
 
 ---
 
 # What is GCD?
 
-The **Greatest Common Divisor (GCD)** is the largest positive integer that divides two integers without leaving a remainder.
+The **Greatest Common Divisor (GCD)** is the largest positive integer that divides two numbers without leaving a remainder.
 
-Example:
+### Example
 
 ```
 GCD(48,18)=6
 ```
 
-because
+Because
 
 ```
 48 = 6 × 8
@@ -47,15 +34,11 @@ because
 18 = 6 × 3
 ```
 
-and no larger integer divides both numbers.
-
 ---
 
 # Euclidean Algorithm
 
-The RTL implements the subtraction-based Euclidean Algorithm.
-
-Algorithm:
+This hardware implements the **subtraction-based Euclidean Algorithm**.
 
 ```
 while(B != 0)
@@ -71,52 +54,47 @@ while(B != 0)
 Result = A
 ```
 
-Example:
+### Example
 
 ```
 A = 48
 
 B = 18
 
-48 >18
+48 > 18
 
-A =30
+A = 30
 
-30 >18
+30 > 18
 
-A =12
+A = 12
 
-18 >12
+18 > 12
 
-B =6
+B = 6
 
-12 >6
+12 > 6
 
-A =6
+A = 6
 
-6 =6
+B = 0
 
-B =0
-
-Result =6
+Result = 6
 ```
 
-The algorithm continues until one operand becomes zero.
+The algorithm repeatedly subtracts the smaller number from the larger one until one operand becomes zero. The remaining value is the Greatest Common Divisor.
 
 ---
 
 # Applications
 
-Digital GCD circuits are widely used in
-
 - Cryptography
 - RSA Encryption
-- Modular Arithmetic
-- Error Correction
 - Digital Signal Processing
-- Hardware Accelerators
-- Arithmetic Logic Units
+- Error Detection and Correction
+- Arithmetic Accelerators
 - Coprocessors
+- Embedded Systems
 - Rational Number Simplification
 
 ---
@@ -128,17 +106,16 @@ Digital GCD circuits are widely used in
 | Verilog HDL | RTL Design |
 | Yosys | Logic Synthesis |
 | OpenSTA | Static Timing Analysis |
-| OSU018 Standard Cell Library | Technology Library |
+| OSU018 Standard Cell Library | Standard Cell Library |
+| gVim | Code Editor |
 | Ubuntu Linux | Development Environment |
-| gVim | RTL Editing |
 
 ---
 
 # Project Structure
 
-```
+```text
 38_Timing Analysis of GCD(Greatest common diviser) using OpenSTA
-
 │
 ├── constraints
 │   └── gcd.sdc
@@ -167,166 +144,98 @@ Digital GCD circuits are widely used in
 
 # RTL Design
 
-## Module Declaration
+The GCD hardware is implemented using a **Finite State Machine (FSM)** and the **subtraction-based Euclidean Algorithm**. The computation is performed sequentially on every rising edge of the clock until the GCD is obtained.
+
+## Module Interface
 
 ```verilog
 module gcd(
+    input clk,
+    input rst,
+    input start,
+    input [31:0] A,
+    input [31:0] B,
+    output reg done,
+    output reg [31:0] result
+);
 ```
 
-Creates the top-level hardware module.
+The module accepts two 32-bit operands (**A** and **B**) along with **clk**, **rst**, and **start** signals. Once the computation is complete, the GCD is stored in **result**, and the **done** signal is asserted.
 
 ---
 
-## Inputs
+## Finite State Machine (FSM)
 
 ```verilog
-input clk
+localparam IDLE = 2'd0,
+           RUN  = 2'd1,
+           DONE = 2'd2;
 ```
 
-System clock controlling all sequential operations.
+The controller consists of three states:
 
-```verilog
-input rst
-```
+### IDLE
 
-Asynchronous reset.
+- Waits for the **start** signal.
+- Loads the input operands into internal registers.
+- Clears the **done** signal.
 
-```verilog
-input start
-```
+### RUN
 
-Starts the GCD computation.
+- Executes the Euclidean subtraction algorithm.
+- Repeatedly subtracts the smaller operand from the larger operand.
+- Continues until one operand becomes zero.
 
-```verilog
-input [31:0] A
+### DONE
 
-input [31:0] B
-```
-
-Two 32-bit operands whose GCD is calculated.
+- Stores the computed GCD in the output register.
+- Asserts the **done** signal.
+- Waits for **start** to become LOW before returning to the IDLE state.
 
 ---
 
-## Outputs
-
-```verilog
-output reg done
-```
-
-Indicates completion of the computation.
-
-```verilog
-output reg [31:0] result
-```
-
-Stores the final GCD value.
-
----
-
-# Finite State Machine (FSM)
-
-The controller uses three states.
-
-## IDLE
-
-```
-Waiting for start signal.
-```
-
-When
-
-```
-start =1
-```
-
-the operands are loaded into internal registers.
-
----
-
-## RUN
-
-Performs the Euclidean subtraction algorithm.
-
-```
-if(B==0)
-
-Result=A
-
-Done=1
-
-else
-
-A=A-B
-
-or
-
-B=B-A
-```
-
-depending on which operand is larger.
-
----
-
-## DONE
-
-The result remains available until
-
-```
-start
-```
-
-returns low.
-
-The FSM then returns to the IDLE state.
-
----
-
-# Internal Registers
-
-```
-a_reg
-```
-
-Stores operand A during computation.
-
-```
-b_reg
-```
-
-Stores operand B during computation.
-
-These registers are repeatedly updated until the GCD is found.
-
----
-
-# Sequential Logic
-
-The design operates on
+## Sequential Logic
 
 ```verilog
 always @(posedge clk or posedge rst)
 ```
 
-meaning
-
-- Operations occur only on the rising clock edge.
-- Reset immediately initializes the design.
+All computations occur on the rising edge of the system clock, while the asynchronous reset initializes the design immediately whenever **rst** is asserted.
 
 ---
 
-# Synthesis
+## Core GCD Computation
 
-The RTL is synthesized using **Yosys**.
+```verilog
+if (b_reg == 0)
+    result <= a_reg;
+else if (a_reg > b_reg)
+    a_reg <= a_reg - b_reg;
+else
+    b_reg <= b_reg - a_reg;
+```
 
-The synthesis flow performs
+This is the heart of the Euclidean Algorithm.
+
+- If **b_reg** becomes zero, the computation is complete.
+- Otherwise, the larger operand is reduced by subtracting the smaller operand.
+- The process repeats until the GCD is obtained.
+
+---
+
+# Synthesis Flow
+
+The RTL design is synthesized using **Yosys**.
+
+The synthesis flow performs:
 
 - RTL Parsing
 - Logic Optimization
-- Flip-Flop Mapping
 - Technology Mapping
+- Flip-Flop Mapping
 - Gate-Level Netlist Generation
 
-Output
+Generated Netlist:
 
 ```
 gcd_synth.v
@@ -336,9 +245,9 @@ gcd_synth.v
 
 # Timing Constraints
 
-Timing constraints are written in **SDC (Synopsys Design Constraints)**.
+Timing constraints are defined using an **SDC (Synopsys Design Constraints)** file.
 
-They define
+The constraints specify:
 
 - Clock Period
 - Input Delay
@@ -346,184 +255,65 @@ They define
 - Input Transition
 - Output Load
 
-Two timing scenarios are analyzed
+Timing analysis is performed for:
 
-- 10 ns
-- 5 ns
+- **10 ns Clock**
+- **5 ns Clock**
 
 ---
 
 # OpenSTA Flow
 
-The following steps are executed.
+The complete timing analysis flow consists of:
 
-## 1. Read Liberty
-
-Loads the OSU018 timing library.
-
----
-
-## 2. Read Netlist
-
-Imports the synthesized design.
-
----
-
-## 3. Link Design
-
-Creates the complete design hierarchy.
-
----
-
-## 4. Read SDC
-
-Applies timing constraints.
-
----
-
-## 5. Generate Timing Reports
-
-Produces
-
-- Setup Report
-- Hold Report
-
----
-
-# Setup Timing Analysis
-
-Setup timing verifies that data arrives **before** the next active clock edge.
-
-The setup report provides
-
-- Data Arrival Time
-- Data Required Time
-- Critical Path
-- Setup Slack
-
-Positive slack
-
-```
-Slack > 0
-```
-
-indicates timing is met.
-
-Negative slack
-
-```
-Slack < 0
-```
-
-indicates a setup violation.
-
----
-
-# Hold Timing Analysis
-
-Hold timing ensures that data remains stable immediately after the active clock edge.
-
-The hold report contains
-
-- Hold Slack
-- Minimum Delay Path
-- Critical Hold Path
-
-Positive hold slack indicates correct operation.
+1. Loading the OSU018 Liberty library.
+2. Reading the synthesized gate-level netlist.
+3. Linking the top-level design.
+4. Reading the SDC timing constraints.
+5. Generating setup and hold timing reports.
 
 ---
 
 # Timing Results
 
-## 10 ns Clock
+## 10 ns Analysis
 
-### Hold Analysis
+| Timing Check | Result |
+|--------------|--------|
+| Setup | **Slack = -1.95 ns (VIOLATED)** |
+| Hold | **Slack = 0.37 ns (MET)** |
 
-```
-Slack = 0.37 ns
-
-Status = MET
-```
-
-The minimum delay path satisfies the hold timing requirement.
+The hold timing satisfies the required constraint, while setup timing violates the specified output timing requirement.
 
 ---
 
-### Setup Analysis
+## 5 ns Analysis
 
-```
-Slack = -1.95 ns
+| Timing Check | Result |
+|--------------|--------|
+| Setup | **Slack = -6.95 ns (VIOLATED)** |
+| Hold | **Slack = 0.37 ns (MET)** |
 
-Status = VIOLATED
-```
-
-The data arrives later than the required time.
-
-Therefore, the design fails setup timing under the given output delay constraint.
-
----
-
-## 5 ns Clock
-
-### Hold Analysis
-
-```
-Slack = 0.37 ns
-
-Status = MET
-```
-
-Hold timing continues to satisfy the requirement.
-
----
-
-### Setup Analysis
-
-```
-Slack = -6.95 ns
-
-Status = VIOLATED
-```
-
-Reducing the clock period further tightens the setup requirement, increasing the setup violation.
-
----
-
-# Screenshots
-
-The screenshots folder contains
-
-- 10 ns Setup Analysis
-- 10 ns Hold Analysis
-- 5 ns Setup Analysis
-- 5 ns Hold Analysis
-
-captured directly from OpenSTA.
+Reducing the clock period increases the setup timing violation because the available time for data propagation becomes smaller.
 
 ---
 
 # Observations
 
-- RTL successfully synthesized.
+- RTL synthesized successfully using Yosys.
 - Gate-level netlist generated successfully.
-- OpenSTA correctly imported the design.
-- Hold timing is satisfied under both clock constraints.
-- Setup timing fails because the required timing is more restrictive than the data arrival time.
-- The violation increases when the clock period is reduced from 10 ns to 5 ns.
-- Timing reports clearly identify the critical timing paths.
+- OpenSTA successfully analyzed the synthesized design.
+- Hold timing requirements are satisfied.
+- Setup timing violations are observed due to tighter timing constraints.
+- The timing reports clearly identify the critical timing paths and slack values.
+- Reducing the clock period from **10 ns** to **5 ns** increases the setup timing violation.
 
 ---
 
 # Conclusion
 
-This project demonstrates the complete **Static Timing Analysis (STA)** flow for a synthesized **Greatest Common Divisor (GCD)** hardware implementation.
+This project demonstrates the complete **Static Timing Analysis (STA)** flow of a synthesized **Greatest Common Divisor (GCD)** hardware implementation using **OpenSTA**.
 
-The RTL was synthesized using **Yosys**, and OpenSTA was used to verify setup and hold timing under **10 ns** and **5 ns** clock constraints.
+The RTL was synthesized using **Yosys**, and timing analysis was performed under **10 ns** and **5 ns** clock constraints using the **OSU018 Standard Cell Library**. The generated timing reports show that **hold timing requirements are satisfied**, while **setup timing violations** occur because the selected clock constraints are more restrictive than the synthesized design's propagation delay.
 
-The analysis shows that **hold timing is successfully met**, while **setup timing violations occur** because the selected clock constraints are aggressive relative to the synthesized design's propagation delay. Tightening the clock period from **10 ns** to **5 ns** further increases the setup violation, illustrating how clock constraints directly influence timing closure.
-
-This project provides practical experience with synthesis, timing constraints, critical path analysis, slack interpretation, and timing verification, which are fundamental steps in modern ASIC and VLSI physical design.
-
-GitHub Repository
-
-**RTL-to-GDSII-Internship-Labs**
+This project provides practical experience with RTL synthesis, timing constraints, critical path analysis, slack interpretation, and timing verification, making it an important step toward understanding ASIC timing closure and digital VLSI design.
