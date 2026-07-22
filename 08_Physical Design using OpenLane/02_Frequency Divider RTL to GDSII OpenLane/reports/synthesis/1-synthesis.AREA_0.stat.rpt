@@ -1,0 +1,21 @@
+
+61. Printing statistics.
+
+=== fd ===
+
+   Number of wires:                  8
+   Number of wire bits:              8
+   Number of public wires:           5
+   Number of public wire bits:       5
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                  6
+     sky130_fd_sc_hd__and2b_2        1
+     sky130_fd_sc_hd__buf_1          1
+     sky130_fd_sc_hd__dfxtp_2        2
+     sky130_fd_sc_hd__nor3_2         1
+     sky130_fd_sc_hd__nor3b_2        1
+
+   Chip area for module '\fd': 77.574400
+
