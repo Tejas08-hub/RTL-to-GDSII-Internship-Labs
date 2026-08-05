@@ -12,7 +12,9 @@ module icg_cell_model (
  en_latch = en;
  end
  assign gated_clk = clk & en_latch;
- always @* en_latch_out = en_latch;
+ always @(*)begin
+  en_latch_out = en_latch;
+ end
  always @(posedge gated_clk or posedge rst) begin
  if (rst)
  count <= 4'b0000;
