@@ -6,3 +6,10 @@ obj_dir/
 *.swo
 *.swl
 *.swm
+09_RISC-V SoC Design and Integration/08 RISC-V SoC RTL-to-GDSII Physical Design/runs/
+
+# OpenLane generated data
+**/runs/
+**/*.vcd
+**/*.fst
+**/*.log
